@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
+'''
 Controller example for the Robot Wrestling Tournament.
 Demonstrates how to use a sensor, here an accelerometer to detect a fall.
 Depending on the fall direction, the robot will play a different motion, which is implemented by a simple Finite State Machine.
 Beats Charlie by getting up after being knocked down.
-"""
+'''
 
 import sys
 from controller import Robot
@@ -45,14 +45,10 @@ class David (Robot):
                 'BACK_FALL': self.back_fall
             }
         )
-
-        # accelerometer
-        self.accelerometer = Accelerometer(
-            self.getDevice('accelerometer'), self.time_step)
-
+        self.accelerometer = Accelerometer(self, self.time_step)
         self.leds = {
             'right': self.getDevice('Face/Led/Right'),
-            'left':  self.getDevice('Face/Led/Left')
+            'left': self.getDevice('Face/Led/Left')
         }
 
         # Shoulder roll motors for getting up from a side fall
@@ -70,12 +66,11 @@ class David (Robot):
         self.fsm.transition_to('BLOCKING_MOTION')
 
         while self.step(self.time_step) != -1:
-            t = self.getTime()
             self.detect_fall()
             self.fsm.execute_action()
 
     def detect_fall(self):
-        """Detect a fall and update the FSM state."""
+        '''Detect a fall and update the FSM state.'''
         [acc_x, acc_y, _] = self.accelerometer.get_new_average()
         if acc_x < -7:
             self.fsm.transition_to('FRONT_FALL')
